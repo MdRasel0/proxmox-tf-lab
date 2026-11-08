@@ -1,0 +1,164 @@
+name: terraform
+
+# Plan on every pull request, apply only after the PR is merged to main.
+# Runs on a SELF-HOSTED runner because Proxmox and NetBox are on a private
+# network that GitHub's hosted runners cannot reach.
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 2 * * *" # nightly drift check (02:00 UTC)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write # needed to post the plan as a comment
+
+env:
+  TF_IN_AUTOMATION: "true"
+  TF_INPUT: "0"
+  TF_VAR_pve_endpoint: ${{ vars.PVE_ENDPOINT }}
+  TF_VAR_pve_api_token: ${{ secrets.PVE_API_TOKEN }}
+  TF_VAR_netbox_url: ${{ vars.NETBOX_URL }}
+  TF_VAR_netbox_token: ${{ secrets.NETBOX_TOKEN }}
+  TF_VAR_ssh_public_key: ${{ vars.SSH_PUBLIC_KEY }}
+
+jobs:
+  # ---------------------------------------------------------------- PLAN
+  plan:
+    if: github.event_name == 'pull_request'
+    runs-on: [self-hosted, linux, proxmox] # your runner's labels
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.17.1
+          terraform_wrapper: false
+
+      - name: Format check
+        run: terraform fmt -check -recursive
+
+      - name: Init
+        run: terraform init -input=false
+
+      - name: Validate
+        run: terraform validate
+
+      - name: Plan
+        id: plan
+        run: |
+          set +e
+          terraform plan -no-color -input=false -out=tfplan > plan.txt 2>&1
+          echo "exit=$?" >> "$GITHUB_OUTPUT"
+          tail -c 60000 plan.txt > plan.trimmed
+
+      # Make destroys impossible to miss in review.
+      - name: Flag destructive changes
+        id: danger
+        run: |
+          if grep -qE "will be destroyed|must be replaced|forces replacement" plan.txt; then
+            echo "found=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "found=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Comment plan on the PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const plan = fs.readFileSync('plan.trimmed', 'utf8');
+            const danger = '${{ steps.danger.outputs.found }}' === 'true';
+            const header = danger
+              ? '## ⚠️ Terraform plan — DESTRUCTIVE CHANGES\n\nThis plan destroys or replaces resources. On a VM that means the disk goes with it. Read every `-/+` before approving.\n'
+              : '## Terraform plan\n';
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: header + '\n```hcl\n' + plan + '\n```'
+            });
+
+      - name: Fail if plan errored
+        if: steps.plan.outputs.exit != '0'
+        run: exit 1
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tfplan
+          path: tfplan
+          retention-days: 5
+
+  # --------------------------------------------------------------- APPLY
+  apply:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: [self-hosted, linux, proxmox]
+    # Gate this environment with required reviewers in repo settings
+    # (Settings → Environments → production → Required reviewers).
+    environment: production
+    concurrency:
+      group: terraform-apply # never two applies at once
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.17.1
+          terraform_wrapper: false
+
+      - name: Init
+        run: terraform init -input=false
+
+      # Re-plan on main rather than reusing the PR artifact: main may have
+      # moved since the PR was opened.
+      - name: Plan
+        run: terraform plan -no-color -input=false -out=tfplan
+
+      - name: Apply
+        run: terraform apply -input=false -auto-approve tfplan
+
+  # --------------------------------------------------------------- DRIFT
+  drift:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: [self-hosted, linux, proxmox]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.17.1
+          terraform_wrapper: false
+
+      - name: Init
+        run: terraform init -input=false
+
+      - name: Detect drift
+        id: drift
+        run: |
+          set +e
+          terraform plan -detailed-exitcode -no-color -input=false > drift.txt 2>&1
+          code=$?
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          cat drift.txt
+          # 0 = clean, 2 = drift, 1 = error
+          [ "$code" = "1" ] && exit 1 || exit 0
+
+      - name: Open an issue when something drifted
+        if: steps.drift.outputs.code == '2'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const body = fs.readFileSync('drift.txt', 'utf8').slice(0, 60000);
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Drift detected — ${new Date().toISOString().slice(0,10)}`,
+              body: 'Something changed outside Terraform.\n\n```hcl\n' + body + '\n```',
+              labels: ['drift']
+            });
