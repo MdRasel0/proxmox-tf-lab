@@ -1,0 +1,19 @@
+# State holds secrets in plaintext — never commit it
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+.terraform/
+# .terraform.lock.hcl is committed so CI uses the same provider versions
+
+# Your real values
+terraform.tfvars
+*.auto.tfvars
+
+# Plan files
+tfplan
+*.tfplan
+
+# Local secret helpers
+varibale _exportation.txt
+*.secret
+.env
