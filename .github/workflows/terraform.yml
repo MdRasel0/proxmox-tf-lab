@@ -20,11 +20,11 @@ permissions:
 env:
   TF_IN_AUTOMATION: "true"
   TF_INPUT: "0"
-  TF_VAR_pve_endpoint: ${{ vars.PVE_ENDPOINT }}
+  TF_VAR_pve_endpoint: ${{ secrets.PVE_ENDPOINT }}
   TF_VAR_pve_api_token: ${{ secrets.PVE_API_TOKEN }}
+  TF_VAR_ssh_public_key: ${{ secrets.SSH_PUBLIC_KEY }}
   TF_VAR_netbox_url: ${{ vars.NETBOX_URL }}
   TF_VAR_netbox_token: ${{ secrets.NETBOX_TOKEN }}
-  TF_VAR_ssh_public_key: ${{ vars.SSH_PUBLIC_KEY }}
 
 jobs:
   # ---------------------------------------------------------------- PLAN
