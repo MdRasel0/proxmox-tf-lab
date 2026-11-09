@@ -12,7 +12,7 @@
 ###############################################################################
 
 locals {
-  services = ["ntp", "dns"]
+  services = ["ntp"]
 }
 
 resource "proxmox_virtual_environment_vm" "svc" {
@@ -45,7 +45,7 @@ resource "proxmox_virtual_environment_vm" "svc" {
   disk {
     datastore_id = var.datastore
     interface    = "scsi0"
-    size         = 20
+    size         = 50
   }
 
   network_device {
