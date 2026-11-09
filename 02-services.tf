@@ -12,7 +12,7 @@
 ###############################################################################
 
 locals {
-  services = ["ntp"]
+  services = ["ntp", "dns"]
 }
 
 resource "proxmox_virtual_environment_vm" "svc" {
@@ -33,11 +33,11 @@ resource "proxmox_virtual_environment_vm" "svc" {
   }
 
   cpu {
-    cores = 2
+    cores = 4
   }
 
   memory {
-    dedicated = 2048
+    dedicated = 4096
   }
 
   # Grow the cloned disk. NOTE: growing is an in-place "~" change.
