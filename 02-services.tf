@@ -12,7 +12,7 @@
 ###############################################################################
 
 locals {
-  services = ["dns", "radius", "monitor"]
+  services = ["dns"]
 }
 
 resource "proxmox_virtual_environment_vm" "svc" {
