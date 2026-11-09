@@ -12,7 +12,7 @@
 ###############################################################################
 
 locals {
-  services = ["dns"]
+  services = ["ntp"]
 }
 
 resource "proxmox_virtual_environment_vm" "svc" {
