@@ -60,7 +60,7 @@ variable "subnet_cidr" {
 variable "gateway" {
   description = "Default gateway for the VMs"
   type        = string
-  default     = "172.16.212.0"
+  default     = "172.16.212.1"
 }
 
 variable "ip_base" {
