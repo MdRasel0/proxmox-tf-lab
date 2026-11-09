@@ -19,8 +19,8 @@ locals {
     "ntp-01" = {
       role     = "ntp"
       cores    = 1
-      memory   = 1024
-      disk     = 10
+      memory   = 2048
+      disk     = 30
       node     = "pve1"
       ip       = null # NetBox allocates
       comments = "Pipeline test"
