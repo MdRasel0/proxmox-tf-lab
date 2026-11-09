@@ -8,18 +8,9 @@ terraform {
     }
   }
 
-  # ---------------------------------------------------------------
-  # LAB: local state is fine to start.
-  # PRODUCTION: uncomment a remote backend so the team shares state
-  # and you get locking + versioning.
-  # ---------------------------------------------------------------
-  # backend "s3" {
-  #   bucket         = "tf-state"
-  #   key            = "proxmox/terraform.tfstate"
-  #   region         = "us-east-1"
-  #   use_path_style = true
-  #   endpoints      = { s3 = "https://minio.internal:9000" }
-  # }
+  backend "pg" {
+    schema_name = "terraform_remote_state"
+  }
 }
 
 provider "proxmox" {
