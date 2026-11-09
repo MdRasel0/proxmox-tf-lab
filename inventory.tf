@@ -26,5 +26,5 @@ locals {
       comments = "Pipeline test"
     }
   }
-  
+
 }
