@@ -16,6 +16,7 @@ on:
 permissions:
   contents: read
   pull-requests: write # needed to post the plan as a comment
+  issues: write # needed by the drift job to open an issue
 
 env:
   TF_IN_AUTOMATION: "true"
