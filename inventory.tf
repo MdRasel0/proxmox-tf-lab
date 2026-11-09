@@ -25,10 +25,8 @@ locals {
       ip       = null # NetBox allocates
       comments = "Pipeline test"
     }
-  }
-   vms = {
-    "ntp-01" = {
-      role     = "ntp2"
+    "ntp-02" = {
+      role     = "ntp"
       cores    = 1
       memory   = 2048
       disk     = 40
@@ -37,4 +35,5 @@ locals {
       comments = "Pipeline test"
     }
   }
+  
 }
