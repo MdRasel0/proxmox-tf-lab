@@ -4,7 +4,7 @@ terraform {
   required_providers {
     proxmox = {
       source  = "bpg/proxmox"
-      version = "~> 0.66" # pin it — 0.x moves fast
+      version = "~> 0.118" # pin it — 0.x moves fast
     }
   }
 
