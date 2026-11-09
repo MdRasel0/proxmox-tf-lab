@@ -1,3 +1,4 @@
+########################  Proxmox  ########################
 variable "pve_endpoint" {
   description = "Proxmox API endpoint, e.g. https://pve1.internal:8006/"
   type        = string
@@ -22,9 +23,15 @@ variable "pve_ssh_user" {
 }
 
 variable "pve_node" {
-  description = "Proxmox node name to build on"
+  description = "Node for the Lab 1 smoke-test VM (inventory VMs set their own node)"
   type        = string
   default     = "pve1"
+}
+
+variable "template_vm_id" {
+  description = "VM ID of the cloud-init golden template"
+  type        = number
+  default     = 9000
 }
 
 variable "datastore" {
@@ -45,34 +52,53 @@ variable "vlan_id" {
   default     = null
 }
 
-variable "template_vm_id" {
-  description = "VM ID of the cloud-init golden template"
-  type        = number
-  default     = 9000
-}
-
-variable "subnet_cidr" {
-  description = "CIDR suffix for VM addresses"
+########################  NetBox  ########################
+variable "netbox_url" {
+  description = "NetBox base URL, e.g. https://netbox.internal"
   type        = string
-  default     = "23"
 }
 
+variable "netbox_token" {
+  description = "NetBox API token — needs WRITE access, Terraform creates records"
+  type        = string
+  sensitive   = true
+}
+
+variable "netbox_insecure" {
+  description = "Skip TLS verification for NetBox"
+  type        = bool
+  default     = true
+}
+
+variable "netbox_cluster_name" {
+  description = "Proxmox cluster object name in NetBox"
+  type        = string
+  default     = "pve-cluster"
+}
+
+variable "netbox_prefix" {
+  description = "Prefix dynamic IPs are allocated from (must exist in NetBox IPAM)"
+  type        = string
+  default     = "172.16.212.0/23"
+}
+
+########################  Network  ########################
 variable "gateway" {
-  description = "Default gateway for the VMs"
+  description = "Default gateway for the VMs (must be inside netbox_prefix)"
   type        = string
   default     = "172.16.212.1"
 }
 
-variable "ip_base" {
-  description = "First three octets for service VM IPs"
+variable "dns_domain" {
+  description = "Search domain; also used for the NetBox dns_name"
   type        = string
-  default     = "172.16.212"
+  default     = "internal"
 }
 
-variable "ip_offset" {
-  description = "Host octet of the first service VM (dns-01 gets this)"
-  type        = number
-  default     = 11
+variable "dns_servers" {
+  description = "Resolvers pushed via cloud-init"
+  type        = list(string)
+  default     = ["1.1.1.1", "8.8.8.8"]
 }
 
 variable "ssh_public_key" {

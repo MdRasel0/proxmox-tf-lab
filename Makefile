@@ -1,5 +1,5 @@
 # Convenience targets for the lab. Run `make help` for the list.
-.PHONY: help init fmt validate plan apply drift destroy
+.PHONY: help init fmt validate plan apply drift smoke vms destroy
 
 help:
 	@grep -E '^[a-z-]+:.*?##' $(MAKEFILE_LIST) | sed 's/:.*##/\t/'
@@ -25,8 +25,8 @@ drift:     ## exit 0 = clean, exit 2 = something drifted
 smoke:     ## Lab 1 only
 	terraform apply -target=proxmox_virtual_environment_vm.lab01
 
-services:  ## Lab 2 only
-	terraform apply -target=proxmox_virtual_environment_vm.svc
+vms:       ## inventory VMs only (inventory.tf)
+	terraform apply -target=proxmox_virtual_environment_vm.vm
 
 destroy:   ## tear the lab down
 	terraform destroy

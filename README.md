@@ -18,6 +18,14 @@ people in production.
 | 6 | Pull IPs from NetBox (optional) | 11 |
 | 7 | Clean up | — |
 
+> **Layout change:** service VMs are no longer a `count` list in
+> `02-services.tf`. They are now defined in **[`inventory.tf`](inventory.tf)**
+> (one map entry per VM), built by `proxmox.tf`, with IPs allocated and
+> recorded by NetBox in `netbox.tf`. Read **[HYBRID.md](HYBRID.md)** for the
+> design and the NetBox prerequisites. Lab 2 and Lab 6 below describe the
+> old layout; the ideas still apply, the resource is now
+> `proxmox_virtual_environment_vm.vm["<name>"]`.
+
 ---
 
 ## Lab 0 — Prerequisites
