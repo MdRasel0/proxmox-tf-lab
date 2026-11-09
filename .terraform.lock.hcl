@@ -3,8 +3,10 @@
 
 provider "registry.terraform.io/bpg/proxmox" {
   version     = "0.118.0"
-  constraints = "~> 0.66"
+  constraints = "~> 0.118"
   hashes = [
+    "h1:MjA21MOiZWbkC5JWGmr6SnBsQ9mX/HoKnHFKuTBYcWc=",
+    "h1:fehLjDJDAotxQhniSQ0gq7UWImYsh+S8HwJ6iuo0di8=",
     "h1:g3nRj4OtMwO7/7s5LhQsIL+fJ1klzgbIJ/bRlcnkEYU=",
     "zh:136a19b2d8a4ad9f8d56225f02fa84826968e5f0796c0c05168ca4456d82ad02",
     "zh:25e398488b58b7c2391ba07424d6c216187e06666d7c61dbbe7feb0024f41ad5",
@@ -20,5 +22,23 @@ provider "registry.terraform.io/bpg/proxmox" {
     "zh:da2c5d1c9319603ca378e92ff741c97467b261480d0743528b02cb6ae41fbd1a",
     "zh:f26e0763dbe6a6b2195c94b44696f2110f7f55433dc142839be16b9697fa5597",
     "zh:fc3a38a51b00388f697566631b5ce035c75261ab02f5f0ac07c8a87cea9df9e8",
+  ]
+}
+
+provider "registry.terraform.io/e-breuninger/netbox" {
+  version     = "5.8.0"
+  constraints = "~> 5.4"
+  hashes = [
+    "h1:F2LHWzEXdx5WssYWlBByUv9omR5ByrH420FCy0RwILs=",
+    "h1:sGQzgqz866QcHRy3N8Ev6mDFAR/ZIi9rJMlm+YKIQ7I=",
+    "h1:xbECf+gsAaivSyMQePQiOQWfLc88G/+y5LDiitEvZBo=",
+    "zh:6412c428d6d018d253388461c14732484aa5fcb092e137f43493e413c7aa6ee0",
+    "zh:65abcac4c766b6600a329c33aed56b29114c2b0ed076561345a85a776418d0a4",
+    "zh:7e9e15ad6ae75cae99cb18f47193c176fe4381cf7b4597a25f7d08b318826324",
+    "zh:834e9bf4442d82bb65f2956eb76ff82ac017ba37dc5577174fd4acd1bbfca04c",
+    "zh:b9cc1af96833e3219b81f6bb0de5dfb08672d676a61bac0d8b272b35e7aa8be3",
+    "zh:d08cd43454fc4d329d24edd4a74a503c9f788bf01c215ffdcec0d92c463bccf8",
+    "zh:ede3a486c79085f98f3340c1d26e3e56c75f63d3d4841472e634b79870769312",
+    "zh:fdb1258840c1472f6de7027c5b6a2c60fac79024bd473225ae01ffa5bcea2480",
   ]
 }

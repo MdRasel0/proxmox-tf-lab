@@ -3,13 +3,17 @@ output "smoketest_vm_id" {
   value       = try(proxmox_virtual_environment_vm.lab01.vm_id, null)
 }
 
-output "services" {
-  description = "Service VMs created by Lab 2"
+output "inventory" {
+  description = "What was built, and the IP NetBox handed out"
   value = {
-    for i, name in local.services : name => {
-      vm_id = proxmox_virtual_environment_vm.svc[i].vm_id
-      ip    = "${var.ip_base}.${var.ip_offset + i}"
-      ssh   = "ssh ops@${var.ip_base}.${var.ip_offset + i}"
+    for k, v in local.vms : k => {
+      node    = v.node
+      cores   = v.cores
+      memory  = "${v.memory} MB"
+      ip      = local.vm_ip[k]
+      source  = v.ip == null ? "netbox-allocated" : "fixed in git"
+      proxmox = proxmox_virtual_environment_vm.vm[k].vm_id
+      ssh     = "ssh ops@${split("/", local.vm_ip[k])[0]}"
     }
   }
 }
