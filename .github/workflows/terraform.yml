@@ -34,11 +34,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.17.1
-          terraform_wrapper: false
-
       - name: Format check
         run: terraform fmt -check -recursive
 
@@ -106,11 +101,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.17.1
-          terraform_wrapper: false
-
       - name: Init
         run: terraform init -input=false -backend-config="conn_str=${{ secrets.PG_CONN_STR }}"
 
@@ -128,11 +118,6 @@ jobs:
     runs-on: [self-hosted, linux, proxmox]
     steps:
       - uses: actions/checkout@v4
-
-      - uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.17.1
-          terraform_wrapper: false
 
       - name: Init
         run: terraform init -input=false -backend-config="conn_str=${{ secrets.PG_CONN_STR }}"
