@@ -1,7 +1,7 @@
-output "smoketest_vm_id" {
-  description = "VM ID of the Lab 1 smoke-test VM"
-  value       = try(proxmox_virtual_environment_vm.lab01.vm_id, null)
-}
+#output "smoketest_vm_id" {
+#  description = "VM ID of the Lab 1 smoke-test VM"
+#  value       = try(proxmox_virtual_environment_vm.lab01.vm_id, null)
+#}
 
 output "inventory" {
   description = "What was built, and the IP NetBox handed out"

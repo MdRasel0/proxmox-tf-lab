@@ -15,25 +15,6 @@
 ###############################################################################
 
 locals {
-  vms = {
-    "ntp-01" = {
-      role     = "ntp"
-      cores    = 2
-      memory   = 2048
-      disk     = 40
-      node     = "pve1"
-      ip       = null # NetBox allocates
-      comments = "Pipeline test"
-    }
-    "ntp-02" = {
-      role     = "ntp"
-      cores    = 2
-      memory   = 1024
-      disk     = 40
-      node     = "pve1"
-      ip       = null # NetBox allocates
-      comments = "Pipeline test"
-    }
-  }
+  vms = { }
 
 }
