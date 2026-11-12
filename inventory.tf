@@ -18,7 +18,7 @@ locals {
   vms = {
     "ntp-01" = {
       role     = "ntp"
-      cores    = 2
+      cores    = 4
       memory   = 4096
       disk     = 40
       node     = "pve1"
