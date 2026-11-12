@@ -14,7 +14,7 @@
 #   - deleting an entry destroys the VM AND releases its IP in NetBox
 ###############################################################################
 
-locals {
-  vms = { }
 
+locals {
+  vms = {}
 }
