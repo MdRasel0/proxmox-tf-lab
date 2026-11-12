@@ -18,8 +18,8 @@ locals {
   vms = {
     "ntp-01" = {
       role     = "ntp"
-      cores    = 4
-      memory   = 4096
+      cores    = 2
+      memory   = 2048
       disk     = 40
       node     = "pve1"
       ip       = null # NetBox allocates
@@ -27,8 +27,8 @@ locals {
     }
     "ntp-02" = {
      role     = "ntp"
-     cores    = 4
-     memory   = 2048
+     cores    = 2
+     memory   = 1024
      disk     = 40
      node     = "pve1"
      ip       = null # NetBox allocates
