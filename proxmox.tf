@@ -20,7 +20,7 @@ resource "proxmox_virtual_environment_vm" "vm" {
   }
 
   agent {
-    enabled = true # needs qemu-guest-agent inside the image
+    enabled = false # needs qemu-guest-agent inside the image
   }
 
   cpu {
